@@ -37,6 +37,103 @@ document.querySelectorAll('section').forEach(section => {
     sectionObserver.observe(section);
 });
 
+// Timetable Interactivity
+const slots = document.querySelectorAll('.slot');
+const preferredTimeInput = document.getElementById('preferred-time');
+const registrationSection = document.getElementById('contact');
+const timetableSection = document.getElementById('timetable');
+
+// Open timetable when clicking the input
+if (preferredTimeInput) {
+    preferredTimeInput.addEventListener('click', function () {
+        timetableSection.scrollIntoView({ behavior: 'smooth' });
+        // Add a subtle highlight to the timetable
+        timetableSection.style.boxShadow = '0 0 25px rgba(197, 160, 89, 0.3)';
+        setTimeout(() => {
+            timetableSection.style.boxShadow = '';
+        }, 2000);
+    });
+}
+
+slots.forEach(slot => {
+    slot.addEventListener('click', function () {
+        if (this.classList.contains('booked')) return;
+
+        // Remove selection from others
+        document.querySelectorAll('.slot.selected').forEach(s => s.classList.remove('selected'));
+
+        // Add selection to this one
+        this.classList.add('selected');
+
+        // Extract data
+        const day = this.getAttribute('data-day');
+        const time = this.getAttribute('data-time');
+
+        // Populate form
+        if (preferredTimeInput) {
+            preferredTimeInput.value = `${day}: ${time}`;
+
+            // Highlight the input temporarily
+            preferredTimeInput.style.borderColor = 'var(--secondary)';
+            preferredTimeInput.style.backgroundColor = 'rgba(197, 160, 89, 0.1)';
+
+            setTimeout(() => {
+                preferredTimeInput.style.borderColor = '';
+                preferredTimeInput.style.backgroundColor = '';
+            }, 2000);
+        }
+
+        // Scroll back to form after selection
+        setTimeout(() => {
+            registrationSection.scrollIntoView({ behavior: 'smooth' });
+        }, 500);
+    });
+});
+
+/**
+ * Global Booking System Automation
+ * Replace 'YOUR_APPS_SCRIPT_URL' with the URL from your Google Apps Script deployment.
+ */
+const BOOKING_API_URL = 'YOUR_APPS_SCRIPT_URL';
+
+async function fetchAndApplyBookings() {
+    if (BOOKING_API_URL === 'YOUR_APPS_SCRIPT_URL') {
+        console.log('Booking API URL not set. Visual timetable using local state.');
+        return;
+    }
+
+    try {
+        const response = await fetch(BOOKING_API_URL);
+        if (!response.ok) throw new Error('Failed to fetch bookings');
+
+        const bookedList = await response.json();
+        updateBookedSlots(bookedList);
+    } catch (error) {
+        console.error('Error fetching booked slots:', error);
+    }
+}
+
+function updateBookedSlots(bookedList) {
+    if (!bookedList || !Array.isArray(bookedList)) return;
+
+    bookedList.forEach(booking => {
+        const slot = document.querySelector(`.slot[data-day="${booking.day}"][data-time="${booking.time}"]`);
+        if (slot) {
+            slot.classList.remove('available', 'selected');
+            slot.classList.add('booked');
+            slot.innerText = 'Booked';
+            // Disable click for booked slots
+            slot.style.cursor = 'not-allowed';
+        }
+    });
+}
+
+// Initial fetch on load
+window.addEventListener('DOMContentLoaded', () => {
+    fetchAndApplyBookings();
+
+});
+
 // Form Submission Handling
 const enrollmentForm = document.getElementById('enrollment-form');
 const formFeedback = document.getElementById('form-feedback');

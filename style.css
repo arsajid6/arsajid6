@@ -585,6 +585,13 @@ section {
     font-size: 0.8rem;
     font-weight: 600;
     transition: var(--transition);
+    cursor: pointer;
+}
+
+.slot:hover {
+    transform: scale(1.05);
+    z-index: 1;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .slot.available {
@@ -592,9 +599,20 @@ section {
     background: rgba(76, 175, 80, 0.05);
 }
 
+.slot.available:hover {
+    background: rgba(76, 175, 80, 0.15);
+}
+
+.slot.selected {
+    background: var(--primary);
+    color: var(--white);
+    box-shadow: 0 4px 15px rgba(45, 90, 39, 0.3);
+}
+
 .slot.booked {
     color: #E53935;
     background: rgba(229, 57, 53, 0.05);
+    cursor: not-allowed;
 }
 
 .timetable-note {
