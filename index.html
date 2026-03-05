@@ -337,9 +337,18 @@
                                     placeholder="Include country code (+...)" required>
                             </div>
                             <div class="form-group">
-                                <label for="timezone">Current Time Zone</label>
-                                <input type="text" id="timezone" name="timezone"
-                                    placeholder="e.g. GMT+5 / Pakistan Time" required>
+                                <label for="timezone">Your Time Zone</label>
+                                <select id="timezone" name="timezone" required>
+                                    <option value="" disabled selected>Select your region/offset</option>
+                                    <option value="GMT+5">Pakistan / Uzbekistan (GMT+5)</option>
+                                    <option value="GMT+3">Saudi Arabia / Qatar / UAE (GMT+3/4)</option>
+                                    <option value="GMT+0">UK / Western Europe (GMT+0/1)</option>
+                                    <option value="GMT-5">USA / Canada East (GMT-5)</option>
+                                    <option value="GMT-8">USA / Canada West (GMT-8)</option>
+                                    <option value="GMT+10">Australia / Sydney (GMT+10/11)</option>
+                                    <option value="other">Other (Mention in message)</option>
+                                </select>
+                                <small class="input-helper">Offsets relative to GMT/UTC</small>
                             </div>
                         </div>
                     </div>

@@ -585,6 +585,14 @@ section {
     box-shadow: 0 0 0 4px rgba(197, 160, 89, 0.1);
 }
 
+.input-helper {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    margin-top: 0.2rem;
+    font-style: italic;
+    opacity: 0.8;
+}
+
 .form-feedback {
     text-align: center;
     font-weight: 600;
