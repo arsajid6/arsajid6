@@ -564,6 +564,19 @@ section {
     font-size: 0.9rem;
 }
 
+.phone-input-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.phone-input-group select {
+    flex: 0 0 120px;
+}
+
+.phone-input-group input {
+    flex: 1;
+}
+
 .form-group input,
 .form-group select,
 .form-group textarea {

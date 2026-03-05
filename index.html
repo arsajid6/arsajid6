@@ -333,8 +333,19 @@
                             </div>
                             <div class="form-group">
                                 <label for="whatsapp">WhatsApp Number</label>
-                                <input type="tel" id="whatsapp" name="whatsapp"
-                                    placeholder="Include country code (+...)" required>
+                                <div class="phone-input-group">
+                                    <select id="country-code" name="country-code" required>
+                                        <option value="+92">PK (+92)</option>
+                                        <option value="+1">US/CA (+1)</option>
+                                        <option value="+44">UK (+44)</option>
+                                        <option value="+971">UAE (+971)</option>
+                                        <option value="+966">SA (+966)</option>
+                                        <option value="+61">AU (+61)</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                    <input type="tel" id="whatsapp" name="whatsapp"
+                                        placeholder="Number (e.g. 3001234567)" required>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label for="timezone">Your Time Zone</label>
