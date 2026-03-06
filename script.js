@@ -91,23 +91,19 @@ slots.forEach(slot => {
 });
 
 /**
- * Global Booking System Automation
- * Replace 'YOUR_APPS_SCRIPT_URL' with the URL from your Google Apps Script deployment.
+ * Global Booking System Automation - WordPress Integration
  */
-const BOOKING_API_URL = 'YOUR_APPS_SCRIPT_URL';
+const BOOKING_AJAX_URL = '/quranacademy/wp-admin/admin-ajax.php';
 
 async function fetchAndApplyBookings() {
-    if (BOOKING_API_URL === 'YOUR_APPS_SCRIPT_URL') {
-        console.log('Booking API URL not set. Visual timetable using local state.');
-        return;
-    }
-
     try {
-        const response = await fetch(BOOKING_API_URL);
+        const response = await fetch(`${BOOKING_AJAX_URL}?action=quran_get_bookings`);
         if (!response.ok) throw new Error('Failed to fetch bookings');
 
-        const bookedList = await response.json();
-        updateBookedSlots(bookedList);
+        const result = await response.json();
+        if (result.success) {
+            updateBookedSlots(result.data);
+        }
     } catch (error) {
         console.error('Error fetching booked slots:', error);
     }
@@ -117,7 +113,7 @@ function updateBookedSlots(bookedList) {
     if (!bookedList || !Array.isArray(bookedList)) return;
 
     bookedList.forEach(booking => {
-        const slot = document.querySelector(`.slot[data-day="${booking.day}"][data-time="${booking.time}"]`);
+        const slot = document.querySelector(`.slot[data-time="${booking.selected_time}"]`);
         if (slot) {
             slot.classList.remove('available', 'selected');
             slot.classList.add('booked');
@@ -151,13 +147,12 @@ if (enrollmentForm) {
         // Collect form data
         const formData = new FormData(this);
 
-        // Use Fetch to send to FormSubmit
-        fetch(this.action, {
+        // Use Fetch to send to WordPress AJAX
+        formData.append('action', 'quran_submit_booking');
+
+        fetch(BOOKING_AJAX_URL, {
             method: 'POST',
-            body: formData,
-            headers: {
-                'Accept': 'application/json'
-            }
+            body: formData
         })
             .then(response => {
                 if (response.ok) {
