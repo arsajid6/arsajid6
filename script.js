@@ -46,12 +46,21 @@ const timetableSection = document.getElementById('timetable');
 // Open timetable when clicking the input
 if (preferredTimeInput) {
     preferredTimeInput.addEventListener('click', function () {
-        timetableSection.scrollIntoView({ behavior: 'smooth' });
-        // Add a subtle highlight to the timetable
-        timetableSection.style.boxShadow = '0 0 25px rgba(197, 160, 89, 0.3)';
+        // Show the timetable by removing the 'hidden' class
+        const container = timetableSection.querySelector('.timetable-container');
+        if (container && container.classList.contains('hidden')) {
+            container.classList.remove('hidden');
+        }
+
+        // Scroll to it for clear visibility
         setTimeout(() => {
-            timetableSection.style.boxShadow = '';
-        }, 2000);
+            timetableSection.scrollIntoView({ behavior: 'smooth' });
+            // Add a subtle highlight to the timetable
+            timetableSection.style.boxShadow = '0 0 25px rgba(197, 160, 89, 0.3)';
+            setTimeout(() => {
+                timetableSection.style.boxShadow = '';
+            }, 2000);
+        }, 300); // slight delay to let it expand
     });
 }
 

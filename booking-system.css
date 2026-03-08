@@ -34,6 +34,22 @@
     border-radius: 32px;
     box-shadow: var(--shadow);
     margin-bottom: 4rem;
+
+    /* Animation properties for hiding/showing */
+    max-height: 2000px;
+    /* Large enough to fit content */
+    opacity: 1;
+    overflow: hidden;
+    transition: max-height 0.6s ease-in-out, opacity 0.5s ease-in-out, margin-bottom 0.6s ease;
+}
+
+.timetable-container.hidden {
+    max-height: 0;
+    opacity: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    border: none;
 }
 
 .timetable-legend {
@@ -70,32 +86,47 @@
     overflow-x: auto;
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    padding-bottom: 10px;
+    /* Space for scrollbar */
 }
 
-.timetable-grid {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 8px;
-    min-width: 800px;
-}
-
-.timetable-grid th {
-    padding: 1.2rem;
-    color: var(--primary);
-    font-weight: 700;
-    text-transform: uppercase;
-    font-size: 0.8rem;
-    letter-spacing: 1px;
-}
-
-.time-col,
-.time-label {
+.timetable-day {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
     background: #f8f9f8;
-    font-weight: 600;
-    color: var(--primary);
-    padding: 1rem !important;
     border-radius: 12px;
-    min-width: 150px;
+    padding: 10px 15px;
+}
+
+.timetable-day h3 {
+    min-width: 120px;
+    color: var(--primary);
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0;
+    padding-right: 15px;
+    border-right: 2px solid #eef2ee;
+}
+
+.slots-container {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 10px;
+    padding-left: 15px;
+    padding-bottom: 5px;
+    /* Scrollbar breathing room */
+}
+
+/* Custom scrollbar for inner slots */
+.slots-container::-webkit-scrollbar {
+    height: 6px;
+}
+
+.slots-container::-webkit-scrollbar-thumb {
+    background: var(--glass-border);
+    border-radius: 3px;
 }
 
 .slot {
