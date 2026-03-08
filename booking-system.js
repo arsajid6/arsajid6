@@ -15,28 +15,38 @@ document.addEventListener('DOMContentLoaded', function () {
     // Context Detection
     const isWordPress = typeof quran_ajax !== 'undefined';
 
-    // AJAX URL logic
-    const getAjaxUrl = () => {
-        console.log('Nur al-Quran: Environment:', {
-            protocol: window.location.protocol,
-            hostname: window.location.hostname,
-            isWordPress: isWordPress
-        });
+    // --- GOOGLE SHEETS SETUP ---
+    // User will paste their Apps Script Web App URL here later
+    const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbxWxU4CtJY91RLLfppNNO0-C5i-kflShPa9wBdPFSUHHSO7nUUZubfLQYxzEvpbRjSlwA/exec';
 
+    // AJAX URL logic
+    const getBackendUrl = () => {
+        // 1. If we are running inside the WordPress Plugin (Shortcode)
         if (isWordPress) return quran_ajax.ajax_url;
 
+        // 2. If Google Sheets URL is provided (For Vercel / Live Local HTML file)
+        if (GOOGLE_SHEET_URL && GOOGLE_SHEET_URL.startsWith('https://script.google.com')) {
+            console.log('Nur al-Quran: Using Google Sheets Backend');
+            return GOOGLE_SHEET_URL;
+        }
+
+        // 3. Fallbacks for local XAMPP testing (if Google Sheet URL is empty)
+        console.log('Nur al-Quran: Environment:', {
+            protocol: window.location.protocol,
+            hostname: window.location.hostname
+        });
+
         if (window.location.protocol === 'file:') {
-            // Hardcoded local fallback
             return 'http://localhost/quranacademy/wp-admin/admin-ajax.php';
         }
         if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
             return '/quranacademy/wp-admin/admin-ajax.php';
         }
-        // Live site relative path
+
         return '/wp-admin/admin-ajax.php';
     };
 
-    const BOOKING_AJAX_URL = getAjaxUrl();
+    const BACKEND_URL = getBackendUrl();
 
     // Timetable Interaction
     if (preferredTimeInput && timetableSection) {
@@ -70,8 +80,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Booking Sync
     async function fetchAndApplyBookings() {
         try {
-            console.log('Nur al-Quran: Syncing bookings from:', BOOKING_AJAX_URL);
-            const response = await fetch(`${BOOKING_AJAX_URL}?action=quran_get_bookings`);
+            console.log('Nur al-Quran: Syncing bookings from:', BACKEND_URL);
+            const response = await fetch(`${BACKEND_URL}?action=quran_get_bookings`);
 
             if (!response.ok) {
                 console.error('Nur al-Quran: Sync response not OK:', response.status, response.statusText);
@@ -112,9 +122,9 @@ document.addEventListener('DOMContentLoaded', function () {
             const formData = new FormData(this);
             formData.append('action', 'quran_submit_booking');
 
-            console.log('Nur al-Quran: Submitting to:', BOOKING_AJAX_URL);
+            console.log('Nur al-Quran: Submitting to:', BACKEND_URL);
 
-            fetch(BOOKING_AJAX_URL, {
+            fetch(BACKEND_URL, {
                 method: 'POST',
                 body: formData,
                 // Add mode 'no-cors' only if absolutely necessary, but for AJAX it's better to stay within CORS
