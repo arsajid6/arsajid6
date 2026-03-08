@@ -1,0 +1,293 @@
+/* 
+  Nur al-Quran - Booking System Component
+  Source file for both static site and WordPress plugin.
+  Sync this file to the WP plugin via sync-to-wp.js
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+
+:root {
+    --primary: #2D5A27;
+    --primary-light: #3d7a35;
+    --secondary: #C5A059;
+    --background: #f0f4f0;
+    --text: #1A1A1A;
+    --text-light: #666666;
+    --glass: rgba(255, 255, 255, 0.9);
+    --glass-border: rgba(255, 255, 255, 0.4);
+    --shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.wp-booking-system,
+.timetable-container,
+.registration-container {
+    font-family: 'Outfit', sans-serif;
+}
+
+/* Timetable Section */
+.timetable-container {
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    padding: 2.5rem;
+    border-radius: 32px;
+    box-shadow: var(--shadow);
+    margin-bottom: 4rem;
+}
+
+.timetable-legend {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.status-dot.available {
+    background: #4CAF50;
+}
+
+.status-dot.booked {
+    background: #d32f2f;
+}
+
+.timetable-grid-wrapper,
+.timetable-wrapper {
+    overflow-x: auto;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.timetable-grid {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 8px;
+    min-width: 800px;
+}
+
+.timetable-grid th {
+    padding: 1.2rem;
+    color: var(--primary);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+.time-col,
+.time-label {
+    background: #f8f9f8;
+    font-weight: 600;
+    color: var(--primary);
+    padding: 1rem !important;
+    border-radius: 12px;
+    min-width: 150px;
+}
+
+.slot {
+    padding: 1rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;
+    border: 1px solid transparent;
+}
+
+.slot.available {
+    background: #ffffff;
+    color: #4CAF50;
+    border-color: #e8f5e9;
+}
+
+.slot.available:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(76, 175, 80, 0.15);
+    background: #ebf7eb;
+}
+
+.slot.selected {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%) !important;
+    color: white !important;
+    box-shadow: 0 10px 20px rgba(45, 90, 39, 0.3);
+    transform: scale(1.05);
+}
+
+.slot.booked {
+    background: #fdeaea;
+    color: #d32f2f;
+    cursor: not-allowed;
+    opacity: 0.7;
+    text-decoration: line-through;
+}
+
+.timetable-note {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-top: 1.5rem;
+    font-style: italic;
+}
+
+/* Form Styles */
+.premium-form {
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    padding: 3rem;
+    border-radius: 32px;
+    box-shadow: var(--shadow);
+}
+
+.form-section {
+    margin-bottom: 2.5rem;
+}
+
+.form-section-title {
+    font-size: 1.1rem;
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #eef2ee;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--primary);
+    margin-left: 5px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 14px 20px;
+    border: 2px solid #eef2ee;
+    border-radius: 15px;
+    background: #f9fbf9;
+    transition: var(--transition);
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+.phone-input-group {
+    display: flex;
+    gap: 10px;
+}
+
+.phone-input-group select {
+    flex: 0 0 120px;
+}
+
+.form-group.full-width {
+    width: 100%;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(45, 90, 39, 0.1);
+}
+
+.input-helper {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    margin-top: -4px;
+    margin-left: 5px;
+}
+
+.btn-submit,
+.btn-cta.full-width {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: white;
+    padding: 18px 40px;
+    border: none;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    width: 100%;
+    transition: var(--transition);
+    box-shadow: 0 10px 25px rgba(45, 90, 39, 0.2);
+    margin-top: 1rem;
+    display: block;
+    text-align: center;
+}
+
+.btn-submit:hover:not(:disabled),
+.btn-cta:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(45, 90, 39, 0.3);
+}
+
+.form-feedback,
+.feedback-msg {
+    margin-top: 1.5rem;
+    text-align: center;
+    padding: 1rem;
+    border-radius: 12px;
+    font-weight: 600;
+    display: none;
+}
+
+.form-feedback.success,
+.feedback-msg.success {
+    background: #E8F5E9;
+    color: #2D5A27;
+    display: block;
+}
+
+.form-feedback.error,
+.feedback-msg.error {
+    background: #FFEBEE;
+    color: #D32F2F;
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.feedback-msg.show {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}

@@ -66,12 +66,11 @@ slots.forEach(slot => {
         this.classList.add('selected');
 
         // Extract data
-        const day = this.getAttribute('data-day');
-        const time = this.getAttribute('data-time');
+        const timeValue = this.getAttribute('data-time');
 
         // Populate form
         if (preferredTimeInput) {
-            preferredTimeInput.value = `${day}: ${time}`;
+            preferredTimeInput.value = timeValue;
 
             // Highlight the input temporarily
             preferredTimeInput.style.borderColor = 'var(--secondary)';
@@ -90,93 +89,5 @@ slots.forEach(slot => {
     });
 });
 
-/**
- * Global Booking System Automation - WordPress Integration
- */
-const BOOKING_AJAX_URL = '/quranacademy/wp-admin/admin-ajax.php';
-
-async function fetchAndApplyBookings() {
-    try {
-        const response = await fetch(`${BOOKING_AJAX_URL}?action=quran_get_bookings`);
-        if (!response.ok) throw new Error('Failed to fetch bookings');
-
-        const result = await response.json();
-        if (result.success) {
-            updateBookedSlots(result.data);
-        }
-    } catch (error) {
-        console.error('Error fetching booked slots:', error);
-    }
-}
-
-function updateBookedSlots(bookedList) {
-    if (!bookedList || !Array.isArray(bookedList)) return;
-
-    bookedList.forEach(booking => {
-        const slot = document.querySelector(`.slot[data-time="${booking.selected_time}"]`);
-        if (slot) {
-            slot.classList.remove('available', 'selected');
-            slot.classList.add('booked');
-            slot.innerText = 'Booked';
-            // Disable click for booked slots
-            slot.style.cursor = 'not-allowed';
-        }
-    });
-}
-
-// Initial fetch on load
-window.addEventListener('DOMContentLoaded', () => {
-    fetchAndApplyBookings();
-
-});
-
-// Form Submission Handling
-const enrollmentForm = document.getElementById('enrollment-form');
-const formFeedback = document.getElementById('form-feedback');
-
-if (enrollmentForm) {
-    enrollmentForm.addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        // Show loading state
-        const submitBtn = this.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerText;
-        submitBtn.innerText = 'Sending...';
-        submitBtn.disabled = true;
-
-        // Collect form data
-        const formData = new FormData(this);
-
-        // Use Fetch to send to WordPress AJAX
-        formData.append('action', 'quran_submit_booking');
-
-        fetch(BOOKING_AJAX_URL, {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => {
-                if (response.ok) {
-                    formFeedback.innerText = 'Assalamu Alaikum! Your registration has been received. We will contact you shortly.';
-                    formFeedback.classList.add('success');
-                    enrollmentForm.reset();
-                } else {
-                    formFeedback.innerText = 'Oops! There was a problem submitting your form. Please try again.';
-                    formFeedback.classList.add('error');
-                }
-            })
-            .catch(error => {
-                formFeedback.innerText = 'Connection error. Please check your internet and try again.';
-                formFeedback.classList.add('error');
-            })
-            .finally(() => {
-                submitBtn.innerText = originalText;
-                submitBtn.disabled = false;
-
-                // Clear feedback after 7 seconds
-                setTimeout(() => {
-                    formFeedback.innerText = '';
-                    formFeedback.classList.remove('success', 'error');
-                }, 7000);
-            });
-    });
-}
+// Form Submission Handling (See booking-system.js for detailed logic)
+// This file can now focus on global UI interactions (sticky header, scroll reveal, etc.)
