@@ -17,14 +17,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // AJAX URL logic
     const getAjaxUrl = () => {
+        console.log('Nur al-Quran: Environment:', {
+            protocol: window.location.protocol,
+            hostname: window.location.hostname,
+            isWordPress: isWordPress
+        });
+
         if (isWordPress) return quran_ajax.ajax_url;
 
         if (window.location.protocol === 'file:') {
+            // Hardcoded local fallback
             return 'http://localhost/quranacademy/wp-admin/admin-ajax.php';
         }
-        if (window.location.hostname === 'localhost') {
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
             return '/quranacademy/wp-admin/admin-ajax.php';
         }
+        // Live site relative path
         return '/wp-admin/admin-ajax.php';
     };
 
@@ -64,9 +72,14 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             console.log('Nur al-Quran: Syncing bookings from:', BOOKING_AJAX_URL);
             const response = await fetch(`${BOOKING_AJAX_URL}?action=quran_get_bookings`);
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+            if (!response.ok) {
+                console.error('Nur al-Quran: Sync response not OK:', response.status, response.statusText);
+                throw new Error(`HTTP ${response.status}`);
+            }
 
             const result = await response.json();
+            console.log('Nur al-Quran: Sync data received:', result);
             const bookedList = result.success ? result.data : result;
 
             if (Array.isArray(bookedList)) {
@@ -81,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
         } catch (error) {
-            console.log('Nur al-Quran: Booking sync skipped:', error.message);
+            console.warn('Nur al-Quran: Booking sync skipped or failed:', error.message);
         }
     }
     fetchAndApplyBookings();
@@ -103,11 +116,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
             fetch(BOOKING_AJAX_URL, {
                 method: 'POST',
-                body: formData
+                body: formData,
+                // Add mode 'no-cors' only if absolutely necessary, but for AJAX it's better to stay within CORS
             })
                 .then(async response => {
+                    console.log('Nur al-Quran: Received response status:', response.status);
                     const isJson = response.headers.get('content-type')?.includes('application/json');
-                    const data = isJson ? await response.json() : null;
+                    const textContent = await response.text();
+
+                    let data = null;
+                    try {
+                        data = JSON.parse(textContent);
+                    } catch (e) {
+                        console.warn('Nur al-Quran: Response was not JSON:', textContent.substring(0, 100));
+                    }
 
                     if (response.ok && (!data || data.success !== false)) {
                         feedback.innerText = 'Assalamu Alaikum! Your registration has been received.';
@@ -122,18 +144,21 @@ document.addEventListener('DOMContentLoaded', function () {
                             feedback.classList.remove('show');
                         }, 10000);
                     } else {
-                        const errorMsg = data?.data || 'Server error';
-                        console.error('Nur al-Quran: Failed:', errorMsg);
-                        feedback.innerText = `Oops! ${errorMsg}. Please try again.`;
+                        const errorMsg = data?.data || 'Server error or invalid response';
+                        console.error('Nur al-Quran: Submission failed:', errorMsg);
+                        feedback.innerText = `Oops! ${errorMsg}. Please try again or contact us via WhatsApp.`;
                         feedback.className = isWordPress ? 'feedback-msg error show' : 'form-feedback error';
                         feedback.style.display = 'block';
                     }
                 })
                 .catch(error => {
-                    console.error('Nur al-Quran: Network Error:', error);
-                    feedback.innerText = 'Connection error. Check your internet/server.';
+                    console.error('Nur al-Quran: Fetch error:', error);
+                    feedback.innerText = 'Connection error. Please ensure your local server (XAMPP) is running.';
                     feedback.className = isWordPress ? 'feedback-msg error show' : 'form-feedback error';
                     feedback.style.display = 'block';
+
+                    // IF AJAX fails on static site, maybe allow default FormSubmit as fallback?
+                    // But we want it in the database. Let's stick to debugging for now.
                 })
                 .finally(() => {
                     submitBtn.innerText = originalText;
