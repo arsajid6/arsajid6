@@ -1,46 +1,257 @@
-const SHEET_NAME = 'Sheet1';
+// ============================================================
+//   Nur al-Quran - Google Apps Script Backend (Code.gs)
+//   PURPOSE: Handle form submissions, send emails, return booked slots
+// ============================================================
 
-function doPost(e) {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
-  const data = e.parameter;
-  
-  const rowData = [
-    new Date(),
-    data['full-name'] || '',
-    data['age'] || '',       
-    data['gender'] || '',    
-    data['country'] || '',   
-    data['email'] || '',     
-    data['whatsapp'] || '',  
-    data['course'] || '',    
-    data['preferred-time'] || '', 
-    data['message'] || ''    
-  ];
-  
-  sheet.appendRow(rowData);
-  
-  return ContentService.createTextOutput(JSON.stringify({ 
-    success: true, 
-    data: 'Application received successfully!' 
-  })).setMimeType(ContentService.MimeType.JSON);
+const SHEET_NAME   = 'Sheet1';          // Tab name at the bottom of your Sheet
+const ADMIN_EMAIL  = 'arsajid6@gmail.com'; // Your Gmail for admin notifications
+
+// ─── Column Indexes (0-based) ────────────────────────────────
+// A=0  B=1  C=2  D=3  E=4  F=5  G=6  H=7  I=8  J=9  K=10
+const COL_TIME_CREATED  = 0;
+const COL_NAME          = 1;
+const COL_AGE           = 2;
+const COL_GENDER        = 3;
+const COL_COUNTRY       = 4;
+const COL_EMAIL         = 5;
+const COL_WHATSAPP      = 6;
+const COL_COURSE        = 7;
+const COL_SELECTED_TIME = 8;
+const COL_MESSAGE       = 9;
+const COL_STATUS        = 10;  // K column → 'Pending' / 'Approved' / 'Rejected'
+
+// ─── Helper: Add CORS Headers ────────────────────────────────
+function corsOutput(jsonString) {
+  return ContentService
+    .createTextOutput(jsonString)
+    .setMimeType(ContentService.MimeType.JSON);
 }
 
+// ============================================================
+//   doPost – receives form submissions from the website
+// ============================================================
+function doPost(e) {
+  try {
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+
+    // Make sure header row exists (runs only if sheet is empty)
+    ensureHeaders(sheet);
+
+    const data = e.parameter;
+
+    const studentEmail    = data['email']          || '';
+    const studentName     = data['full-name']       || 'Student';
+    const preferredTime   = data['preferred-time']  || 'Not specified';
+    const course          = data['course']          || 'Not specified';
+    const age             = data['age']             || '';
+    const gender          = data['gender']          || '';
+    const country         = data['country']         || '';
+    const whatsapp        = data['whatsapp']        || '';
+    const message         = data['message']         || '';
+
+    // ── Append new row ────────────────────────────────────────
+    const rowData = [
+      new Date(),       // A – time_created
+      studentName,      // B – student_name
+      age,              // C – age
+      gender,           // D – gender
+      country,          // E – country
+      studentEmail,     // F – email
+      whatsapp,         // G – whatsapp
+      course,           // H – course
+      preferredTime,    // I – selected_time
+      message,          // J – message
+      'Pending'         // K – status  (change to 'Approved' in Sheet to confirm)
+    ];
+
+    sheet.appendRow(rowData);
+
+    // ── Email to Admin ────────────────────────────────────────
+    const adminSubject = `📩 New Application: ${studentName} – Nur al-Quran`;
+    const adminBody =
+      `Assalamu Alaikum,\n\n` +
+      `A new admission application has been received.\n\n` +
+      `────────────────────────\n` +
+      `Name:           ${studentName}\n` +
+      `Age:            ${age}\n` +
+      `Gender:         ${gender}\n` +
+      `Country:        ${country}\n` +
+      `Email:          ${studentEmail}\n` +
+      `WhatsApp:       ${whatsapp}\n` +
+      `Course:         ${course}\n` +
+      `Preferred Time: ${preferredTime}\n` +
+      `Message:        ${message}\n` +
+      `────────────────────────\n\n` +
+      `To approve this application, open the Google Sheet and change the STATUS column (K) from "Pending" to "Approved".\n` +
+      `The student will automatically receive a confirmation email.\n\n` +
+      `Wassalam,\nBooking System`;
+
+    try {
+      MailApp.sendEmail({ to: ADMIN_EMAIL, subject: adminSubject, body: adminBody });
+    } catch (err) {
+      Logger.log('Admin email error: ' + err.message);
+    }
+
+    // ── Email to Student ──────────────────────────────────────
+    if (studentEmail) {
+      const studentSubject = `✅ Application Received – Nur al-Quran`;
+      const studentBody =
+        `Assalamu Alaikum ${studentName},\n\n` +
+        `Jazakallah Khair for your interest in Nur al-Quran Academy.\n\n` +
+        `We have successfully received your application for:\n` +
+        `  • Course: ${course}\n` +
+        `  • Preferred Time: ${preferredTime}\n\n` +
+        `Our team will review your application and contact you shortly to confirm your slot and arrange your FREE trial class. Insha'Allah!\n\n` +
+        `If you have any urgent queries, please reach us on WhatsApp.\n\n` +
+        `Wassalam,\nNur al-Quran Team`;
+
+      try {
+        MailApp.sendEmail({ to: studentEmail, subject: studentSubject, body: studentBody });
+      } catch (err) {
+        Logger.log('Student email error: ' + err.message);
+      }
+    }
+
+    return corsOutput(JSON.stringify({
+      success: true,
+      data: 'Application received! Please check your email for confirmation.'
+    }));
+
+  } catch (err) {
+    Logger.log('doPost error: ' + err.message);
+    return corsOutput(JSON.stringify({ success: false, data: 'Server error: ' + err.message }));
+  }
+}
+
+// ============================================================
+//   doGet – returns the list of APPROVED booked time slots
+//           so the website timetable can mark them as "Booked"
+// ============================================================
 function doGet(e) {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
-  const data = sheet.getDataRange().getValues();
-  
-  const TIME_INDEX = 8; 
-  let bookedSlots = [];
-  
-  for (let i = 1; i < data.length; i++) {
-    let time = data[i][TIME_INDEX];
-    if (time) {
-      bookedSlots.push({ selected_time: time });
+  try {
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+    const allData = sheet.getDataRange().getValues();
+
+    let bookedSlots = [];
+
+    // Start from row index 1 to skip the header row
+    for (let i = 1; i < allData.length; i++) {
+      const time   = allData[i][COL_SELECTED_TIME];
+      const status = allData[i][COL_STATUS];
+
+      // Only show as BOOKED if admin has explicitly set status = 'Approved'
+      if (time && String(status).trim() === 'Approved') {
+        bookedSlots.push({ selected_time: String(time).trim() });
+      }
+    }
+
+    return corsOutput(JSON.stringify({ success: true, data: bookedSlots }));
+
+  } catch (err) {
+    Logger.log('doGet error: ' + err.message);
+    return corsOutput(JSON.stringify({ success: false, data: [] }));
+  }
+}
+
+// ============================================================
+//   onEdit – Automatic trigger: fires whenever you edit a cell
+//   When you change STATUS (col K) to 'Approved', this sends
+//   a confirmation email to the student automatically.
+// ============================================================
+function onEdit(e) {
+  const sheet = e.source.getActiveSheet();
+
+  // Only run on our bookings sheet
+  if (sheet.getName() !== SHEET_NAME) return;
+
+  const editedCol = e.range.getColumn();
+  const editedRow = e.range.getRow();
+
+  // Column K = 11 (1-based). Skip header row (row 1).
+  if (editedCol !== 11 || editedRow <= 1) return;
+
+  const newValue = String(e.value || '').trim();
+
+  if (newValue === 'Approved') {
+    const rowData     = sheet.getRange(editedRow, 1, 1, 11).getValues()[0];
+    const studentName = rowData[COL_NAME]          || 'Student';
+    const studentEmail= rowData[COL_EMAIL]         || '';
+    const course      = rowData[COL_COURSE]        || 'the course';
+    const slotTime    = rowData[COL_SELECTED_TIME] || 'your preferred time';
+
+    if (!studentEmail) return;
+
+    const subject = `🎉 Booking Confirmed – Nur al-Quran`;
+    const body =
+      `Assalamu Alaikum ${studentName},\n\n` +
+      `Masha'Allah! Your booking has been CONFIRMED.\n\n` +
+      `  • Course:    ${course}\n` +
+      `  • Time Slot: ${slotTime}\n\n` +
+      `Please join your trial class at the above time. Our teacher will contact you before the session to provide the Zoom/link details.\n\n` +
+      `Barakallahu feekum,\nNur al-Quran Team`;
+
+    try {
+      MailApp.sendEmail({ to: studentEmail, subject: subject, body: body });
+      Logger.log('Approval email sent to: ' + studentEmail);
+    } catch (err) {
+      Logger.log('Approval email error: ' + err.message);
+    }
+
+  } else if (newValue === 'Rejected') {
+    const rowData     = sheet.getRange(editedRow, 1, 1, 11).getValues()[0];
+    const studentName = rowData[COL_NAME]  || 'Student';
+    const studentEmail= rowData[COL_EMAIL] || '';
+
+    if (!studentEmail) return;
+
+    const subject = `Regarding Your Application – Nur al-Quran`;
+    const body =
+      `Assalamu Alaikum ${studentName},\n\n` +
+      `We appreciate your interest in Nur al-Quran Academy.\n\n` +
+      `Unfortunately, we are unable to accommodate your application at this time due to limited slot availability. ` +
+      `We encourage you to apply again when new slots open, InshaaAllah.\n\n` +
+      `If you have any questions, please feel free to contact us on WhatsApp.\n\n` +
+      `Wassalam,\nNur al-Quran Team`;
+
+    try {
+      MailApp.sendEmail({ to: studentEmail, subject: subject, body: body });
+      Logger.log('Rejection email sent to: ' + studentEmail);
+    } catch (err) {
+      Logger.log('Rejection email error: ' + err.message);
     }
   }
-  
-  return ContentService.createTextOutput(JSON.stringify({
-    success: true,
-    data: bookedSlots
-  })).setMimeType(ContentService.MimeType.JSON);
+}
+
+// ============================================================
+//   ensureHeaders – Creates the header row if the sheet is empty
+// ============================================================
+function ensureHeaders(sheet) {
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow([
+      'time_created', 'student_name', 'age', 'gender', 'country',
+      'email', 'whatsapp', 'course', 'selected_time', 'message', 'status'
+    ]);
+    // Style the header row
+    const headerRange = sheet.getRange(1, 1, 1, 11);
+    headerRange.setBackground('#1a3c5e');
+    headerRange.setFontColor('#ffffff');
+    headerRange.setFontWeight('bold');
+  }
+}
+
+// ============================================================
+//   setupTrigger – Run this ONCE manually to register onEdit
+//   Go to: Apps Script → Run → setupTrigger
+// ============================================================
+function setupTrigger() {
+  // Delete old triggers to avoid duplicates
+  ScriptApp.getProjectTriggers().forEach(t => ScriptApp.deleteTrigger(t));
+
+  // Install a fresh onEdit trigger
+  ScriptApp.newTrigger('onEdit')
+    .forSpreadsheet(SpreadsheetApp.getActiveSpreadsheet())
+    .onEdit()
+    .create();
+
+  Logger.log('✅ onEdit trigger installed successfully!');
 }

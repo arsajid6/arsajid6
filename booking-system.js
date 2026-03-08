@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- GOOGLE SHEETS SETUP ---
     // User will paste their Apps Script Web App URL here later
-    const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbxWxU4CtJY91RLLfppNNO0-C5i-kflShPa9wBdPFSUHHSO7nUUZubfLQYxzEvpbRjSlwA/exec';
+    const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbyhMlo2Vl9UQgaS5Rn8XwcuyYMCC1J_oB-0_MFRjsGkU1_j_tlxNV1RVnnFO6Qa4FTTAg/exec';
 
     // AJAX URL logic
     const getBackendUrl = () => {
@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
 
                     if (response.ok && (!data || data.success !== false)) {
-                        feedback.innerText = 'Assalamu Alaikum! Your registration has been received.';
+                        feedback.innerText = 'Assalamu Alaikum! Your application has been received. Please check your email for confirmation.';
                         feedback.className = isWordPress ? 'feedback-msg success show' : 'form-feedback success';
                         feedback.style.display = 'block';
 

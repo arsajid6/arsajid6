@@ -43,26 +43,38 @@ const preferredTimeInput = document.getElementById('preferred-time');
 const registrationSection = document.getElementById('contact');
 const timetableSection = document.getElementById('timetable');
 
+// Function to open and scroll to the timetable
+function openTimetable(e) {
+    if (e && e.type === 'click' && e.target.tagName === 'A') {
+        e.preventDefault();
+    }
+
+    // The timetable section itself has the hidden class, so remove it directly
+    if (timetableSection && timetableSection.classList.contains('hidden')) {
+        timetableSection.classList.remove('hidden');
+    }
+
+    // Scroll to it for clear visibility
+    setTimeout(() => {
+        timetableSection.scrollIntoView({ behavior: 'smooth' });
+        // Add a subtle highlight to the timetable
+        timetableSection.style.boxShadow = '0 0 25px rgba(197, 160, 89, 0.3)';
+        setTimeout(() => {
+            timetableSection.style.boxShadow = '';
+        }, 2000);
+    }, 100); // slight delay to let it expand
+}
+
 // Open timetable when clicking the input
 if (preferredTimeInput) {
-    preferredTimeInput.addEventListener('click', function () {
-        // Show the timetable by removing the 'hidden' class
-        const container = timetableSection.querySelector('.timetable-container');
-        if (container && container.classList.contains('hidden')) {
-            container.classList.remove('hidden');
-        }
-
-        // Scroll to it for clear visibility
-        setTimeout(() => {
-            timetableSection.scrollIntoView({ behavior: 'smooth' });
-            // Add a subtle highlight to the timetable
-            timetableSection.style.boxShadow = '0 0 25px rgba(197, 160, 89, 0.3)';
-            setTimeout(() => {
-                timetableSection.style.boxShadow = '';
-            }, 2000);
-        }, 300); // slight delay to let it expand
-    });
+    preferredTimeInput.addEventListener('click', openTimetable);
 }
+
+// Open timetable when clicking "View Timetable" buttons
+document.querySelectorAll('a[href="#timetable"]').forEach(btn => {
+    btn.addEventListener('click', openTimetable);
+});
+
 
 slots.forEach(slot => {
     slot.addEventListener('click', function () {
