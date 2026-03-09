@@ -97,34 +97,65 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Booking Sync
-    async function fetchAndApplyBookings() {
-        try {
-            console.log('Nur al-Quran: Syncing bookings from:', BACKEND_URL);
-            const response = await fetch(`${BACKEND_URL}?action=quran_get_bookings`);
+    function fetchAndApplyBookings() {
+        const isWordPress = typeof quran_ajax !== 'undefined';
+        let fetchPromise;
 
-            if (!response.ok) {
-                console.error('Nur al-Quran: Sync response not OK:', response.status, response.statusText);
-                throw new Error(`HTTP ${response.status}`);
-            }
-
-            const result = await response.json();
-            console.log('Nur al-Quran: Sync data received:', result);
-            const bookedList = result.success ? result.data : result;
-
-            if (Array.isArray(bookedList)) {
-                bookedList.forEach(booking => {
-                    const slot = document.querySelector(`.slot[data-time="${booking.selected_time}"]`);
-                    if (slot) {
-                        slot.classList.remove('available', 'selected');
-                        slot.classList.add('booked');
-                        slot.innerText = isWordPress ? 'Reserved' : 'Booked';
-                        slot.style.cursor = 'not-allowed';
-                    }
+        if (isWordPress) {
+            // Fetch from WordPress AJAX
+            fetchPromise = fetch(quran_ajax.ajax_url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    'action': 'quran_get_bookings'
+                })
+            }).then(response => response.json())
+                .then(data => data.success ? data.data : []);
+        } else {
+            // Fetch from Google Apps Script
+            const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyc9R05b4t0P-v0wN7x_iHozQZp6M8IuX2D-nI34zJ5gT77-AIny-Yx3wSCA7VbF7E/exec'; // Ensure real URL
+            fetchPromise = fetch(GOOGLE_SCRIPT_URL)
+                .then(response => response.json())
+                .then(data => data.success ? data.data : [])
+                .catch(error => {
+                    console.error("Error fetching from GAS:", error);
+                    return [];
                 });
-            }
-        } catch (error) {
-            console.warn('Nur al-Quran: Booking sync skipped or failed:', error.message);
         }
+
+        fetchPromise.then(bookings => {
+            if (!bookings || bookings.length === 0) return;
+
+            // bookings can be array of objects: {selected_time: 'Mon: 07:00...', status: 'new'} or just objects with selected_time
+            bookings.forEach(booking => {
+                const timeSlotText = booking.selected_time || booking;
+                const status = booking.status ? booking.status.toLowerCase() : 'approved'; // Default to approved for older data if missing
+
+                // Find the slot in the DOM
+                const slotElement = document.querySelector(`.slot[data-time="${timeSlotText}"]`);
+
+                if (slotElement) {
+                    // Clear existing availability classes
+                    slotElement.classList.remove('available', 'booked', 'waiting', 'selected');
+
+                    if (status === 'new' || status === 'pending' || status === 'waiting') {
+                        // Waiting status
+                        slotElement.classList.add('waiting');
+                        slotElement.textContent = 'Waiting';
+                    } else if (status === 'approved' || status === 'booked') {
+                        // Fully booked status
+                        slotElement.classList.add('booked');
+                        slotElement.textContent = 'Reserved';
+                    } else {
+                        // Fallback to booked if weird status
+                        slotElement.classList.add('booked');
+                        slotElement.textContent = 'Reserved';
+                    }
+                }
+            });
+        });
     }
     fetchAndApplyBookings();
 

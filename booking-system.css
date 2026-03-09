@@ -77,6 +77,11 @@
     background: #4CAF50;
 }
 
+.status-dot.waiting {
+    background: #FF9800;
+    /* Orange/Amber */
+}
+
 .status-dot.booked {
     background: #d32f2f;
 }
@@ -157,6 +162,14 @@
     color: white !important;
     box-shadow: 0 10px 20px rgba(45, 90, 39, 0.3);
     transform: scale(1.05);
+}
+
+.slot.waiting {
+    background: #FFF3E0;
+    color: #F57C00;
+    border-color: #FFE0B2;
+    cursor: not-allowed;
+    opacity: 0.9;
 }
 
 .slot.booked {
