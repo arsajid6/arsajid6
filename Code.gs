@@ -101,7 +101,7 @@ function doPost(e) {
         `We have successfully received your application for:\n` +
         `  • Course: ${course}\n` +
         `  • Preferred Time: ${preferredTime}\n\n` +
-        `Our team will review your application and contact you shortly to confirm your slot and arrange your FREE trial class. Insha'Allah!\n\n` +
+        `Your application is currently in 'Waiting' status. Our team will review it and contact you shortly to confirm your slot and arrange your FREE trial class, Insha'Allah!\n\n` +
         `If you have any urgent queries, please reach us on WhatsApp.\n\n` +
         `Wassalam,\nNur al-Quran Team`;
 
@@ -137,11 +137,11 @@ function doGet(e) {
     // Start from row index 1 to skip the header row
     for (let i = 1; i < allData.length; i++) {
       const time   = allData[i][COL_SELECTED_TIME];
-      const status = allData[i][COL_STATUS];
+      const status = String(allData[i][COL_STATUS] || '').trim();
 
-      // Only show as BOOKED if admin has explicitly set status = 'Approved'
-      if (time && String(status).trim() === 'Approved') {
-        bookedSlots.push({ selected_time: String(time).trim() });
+      // Show as BOOKED if Approved, WAITING if Pending/new
+      if (time && (status === 'Approved' || status === 'Pending' || status === 'new' || status === 'WAITING' || status === 'Waiting')) {
+        bookedSlots.push({ selected_time: String(time).trim(), status: status });
       }
     }
 

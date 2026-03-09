@@ -170,14 +170,19 @@ document.addEventListener('DOMContentLoaded', function () {
             submitBtn.disabled = true;
 
             const formData = new FormData(this);
-            formData.append('action', 'quran_submit_booking');
+            if (isWordPress) {
+                formData.append('action', 'quran_submit_booking');
+            }
+
+            const dataToPost = isWordPress ? formData : new URLSearchParams(formData);
+            const headers = isWordPress ? {} : { 'Content-Type': 'application/x-www-form-urlencoded' };
 
             console.log('Nur al-Quran: Submitting to:', BACKEND_URL);
 
             fetch(BACKEND_URL, {
                 method: 'POST',
-                body: formData,
-                // Add mode 'no-cors' only if absolutely necessary, but for AJAX it's better to stay within CORS
+                body: dataToPost,
+                headers: headers
             })
                 .then(async response => {
                     console.log('Nur al-Quran: Received response status:', response.status);
