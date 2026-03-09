@@ -48,9 +48,28 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const BACKEND_URL = getBackendUrl();
 
+    const viewTimetableBtn = document.getElementById('view-timetable-btn');
+    if (viewTimetableBtn && timetableSection) {
+        viewTimetableBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            const isHidden = timetableSection.classList.toggle('hidden');
+            this.innerText = isHidden ? 'View Timetable' : 'Minimize Timetable';
+
+            if (!isHidden) {
+                timetableSection.scrollIntoView({ behavior: 'smooth' });
+                timetableSection.style.boxShadow = '0 0 25px rgba(197, 160, 89, 0.3)';
+                setTimeout(() => { timetableSection.style.boxShadow = ''; }, 2000);
+            }
+        });
+    }
+
     // Timetable Interaction
     if (preferredTimeInput && timetableSection) {
         preferredTimeInput.addEventListener('click', function () {
+            if (timetableSection.classList.contains('hidden')) {
+                timetableSection.classList.remove('hidden');
+                if (viewTimetableBtn) viewTimetableBtn.innerText = 'Minimize Timetable';
+            }
             timetableSection.scrollIntoView({ behavior: 'smooth' });
             timetableSection.style.boxShadow = '0 0 25px rgba(197, 160, 89, 0.3)';
             setTimeout(() => { timetableSection.style.boxShadow = ''; }, 2000);
