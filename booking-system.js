@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(data => data.success ? data.data : []);
         } else {
             // Fetch from Google Apps Script
-            const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyc9R05b4t0P-v0wN7x_iHozQZp6M8IuX2D-nI34zJ5gT77-AIny-Yx3wSCA7VbF7E/exec'; // Ensure real URL
+            const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyhMlo2Vl9UQgaS5Rn8XwcuyYMCC1J_oB-0_MFRjsGkU1_j_tlxNV1RVnnFO6Qa4FTTAg/exec'; // Ensure real URL
             fetchPromise = fetch(GOOGLE_SCRIPT_URL)
                 .then(response => response.json())
                 .then(data => data.success ? data.data : [])

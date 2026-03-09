@@ -182,13 +182,17 @@ function onEdit(e) {
     if (!studentEmail) return;
 
     const subject = `🎉 Booking Confirmed – Nur al-Quran`;
-    const body =
-      `Assalamu Alaikum ${studentName},\n\n` +
-      `Masha'Allah! Your booking has been CONFIRMED.\n\n` +
-      `  • Course:    ${course}\n` +
-      `  • Time Slot: ${slotTime}\n\n` +
-      `Please join your trial class at the above time. Our teacher will contact you before the session to provide the Zoom/link details.\n\n` +
-      `Barakallahu feekum,\nNur al-Quran Team`;
+    const body = `Assalamu Alaikum ${studentName},
+
+Masha'Allah! Your booking has been CONFIRMED.
+
+  • Course:    ${course}
+  • Time Slot: ${slotTime}
+
+Please join your trial class at the above time. Our teacher will contact you before the session to provide the Zoom/link details.
+
+Barakallahu feekum,
+Nur al-Quran Team`;
 
     try {
       MailApp.sendEmail({ to: studentEmail, subject: subject, body: body });
@@ -205,13 +209,16 @@ function onEdit(e) {
     if (!studentEmail) return;
 
     const subject = `Regarding Your Application – Nur al-Quran`;
-    const body =
-      `Assalamu Alaikum ${studentName},\n\n` +
-      `We appreciate your interest in Nur al-Quran Academy.\n\n` +
-      `Unfortunately, we are unable to accommodate your application at this time due to limited slot availability. ` +
-      `We encourage you to apply again when new slots open, InshaaAllah.\n\n` +
-      `If you have any questions, please feel free to contact us on WhatsApp.\n\n` +
-      `Wassalam,\nNur al-Quran Team`;
+    const body = `Assalamu Alaikum ${studentName},
+
+We appreciate your interest in Nur al-Quran Academy.
+
+Unfortunately, we are unable to accommodate your application at this time due to limited slot availability. We encourage you to apply again when new slots open, InshaaAllah.
+
+If you have any questions, please feel free to contact us on WhatsApp.
+
+Wassalam,
+Nur al-Quran Team`;
 
     try {
       MailApp.sendEmail({ to: studentEmail, subject: subject, body: body });
