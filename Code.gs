@@ -90,7 +90,9 @@ function doPost(e) {
     let debugLog = [];
 
     try {
-      MailApp.sendEmail({ to: ADMIN_EMAIL, subject: adminSubject, body: adminBody });
+      GmailApp.sendEmail(ADMIN_EMAIL, adminSubject, adminBody, {
+        name: 'Nur al-Quran Academy'
+      });
       debugLog.push('Admin Email: OK');
     } catch (err) {
       debugLog.push('Admin Email Error: ' + err.message);
@@ -110,7 +112,9 @@ function doPost(e) {
         `Wassalam,\nNur al-Quran Team`;
 
       try {
-        MailApp.sendEmail({ to: studentEmail, subject: studentSubject, body: studentBody });
+        GmailApp.sendEmail(studentEmail, studentSubject, studentBody, {
+          name: 'Nur al-Quran Academy'
+        });
         debugLog.push('Student Email: OK');
       } catch (err) {
         debugLog.push('Student Email Error: ' + err.message);
@@ -205,7 +209,9 @@ Barakallahu feekum,
 Nur al-Quran Team`;
 
     try {
-      MailApp.sendEmail({ to: studentEmail, subject: subject, body: body });
+      GmailApp.sendEmail(studentEmail, subject, body, {
+        name: 'Nur al-Quran Academy'
+      });
       Logger.log('Approval email sent to: ' + studentEmail);
     } catch (err) {
       Logger.log('Approval email error: ' + err.message);
@@ -231,7 +237,9 @@ Wassalam,
 Nur al-Quran Team`;
 
     try {
-      MailApp.sendEmail({ to: studentEmail, subject: subject, body: body });
+      GmailApp.sendEmail(studentEmail, subject, body, {
+        name: 'Nur al-Quran Academy'
+      });
       Logger.log('Rejection email sent to: ' + studentEmail);
     } catch (err) {
       Logger.log('Rejection email error: ' + err.message);

@@ -86,82 +86,75 @@
     background: #d32f2f;
 }
 
-.timetable-grid-wrapper,
 .timetable-wrapper {
-    overflow-x: auto;
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-    padding-bottom: 10px;
-    /* Space for scrollbar */
-}
-
-.timetable-day {
     display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-    background: #f8f9f8;
-    border-radius: 12px;
-    padding: 10px 15px;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1rem 0;
 }
 
-.timetable-day h3 {
-    min-width: 120px;
+.timetable-day-row {
+    background: #f8fbf8;
+    border-radius: 20px;
+    padding: 1.5rem;
+    border: 1px solid #eef2ee;
+}
+
+.day-header {
+    font-size: 1.2rem;
     color: var(--primary);
-    font-size: 1.1rem;
     font-weight: 700;
-    margin: 0;
-    padding-right: 15px;
-    border-right: 2px solid #eef2ee;
-}
-
-.slots-container {
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 0.5rem;
     display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    gap: 10px;
-    padding-left: 15px;
-    padding-bottom: 5px;
-    /* Scrollbar breathing room */
+    justify-content: space-between;
+    align-items: center;
 }
 
-/* Custom scrollbar for inner slots */
-.slots-container::-webkit-scrollbar {
-    height: 6px;
-}
-
-.slots-container::-webkit-scrollbar-thumb {
-    background: var(--glass-border);
-    border-radius: 3px;
+.slots-flex {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
 }
 
 .slot {
-    padding: 1rem;
-    border-radius: 12px;
+    padding: 0.8rem 1.2rem;
+    border-radius: 50px;
     cursor: pointer;
     transition: var(--transition);
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     text-align: center;
-    border: 1px solid transparent;
+    border: 2px solid transparent;
+    min-width: 140px;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+}
+
+td:empty {
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
 }
 
 .slot.available {
-    background: #ffffff;
     color: #4CAF50;
     border-color: #e8f5e9;
 }
 
 .slot.available:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 20px rgba(76, 175, 80, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(76, 175, 80, 0.1);
     background: #ebf7eb;
 }
 
 .slot.selected {
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%) !important;
     color: white !important;
-    box-shadow: 0 10px 20px rgba(45, 90, 39, 0.3);
-    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(45, 90, 39, 0.2);
+    transform: scale(1.02);
+    border-color: var(--primary);
 }
 
 .slot.waiting {
@@ -169,15 +162,33 @@
     color: #F57C00;
     border-color: #FFE0B2;
     cursor: not-allowed;
-    opacity: 0.9;
+    opacity: 0.85;
 }
 
 .slot.booked {
     background: #fdeaea;
     color: #d32f2f;
+    border-color: #ffcdd2;
     cursor: not-allowed;
     opacity: 0.7;
     text-decoration: line-through;
+}
+
+.loading-slots {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-light);
+    font-style: italic;
+}
+
+@media (max-width: 768px) {
+    .slots-flex {
+        justify-content: center;
+    }
+
+    .slot {
+        flex: 1 1 140px;
+    }
 }
 
 .timetable-note {

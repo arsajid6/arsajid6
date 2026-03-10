@@ -76,25 +76,96 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    slots.forEach(slot => {
-        slot.addEventListener('click', function () {
-            if (this.classList.contains('booked')) return;
+    // --- Dynamic Timetable Configuration ---
+    const TIMES = [
+        '04:00 AM - 05:00 AM', '05:00 AM - 06:00 AM', '06:00 AM - 07:00 AM',
+        '07:00 AM - 08:00 AM', '08:00 AM - 09:00 AM', '09:00 AM - 10:00 AM',
+        '10:00 AM - 11:00 AM', '11:00 AM - 12:00 PM', '12:00 PM - 01:00 PM',
+        '01:00 PM - 02:00 PM', '02:00 PM - 03:00 PM', '03:00 PM - 04:00 PM',
+        '04:00 PM - 05:00 PM', '05:00 PM - 06:00 PM', '06:00 PM - 07:00 PM',
+        '07:00 PM - 08:00 PM', '08:00 PM - 09:00 PM', '09:00 PM - 10:00 PM',
+        '10:00 PM - 11:00 PM'
+    ];
+    const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-            document.querySelectorAll('.slot.selected').forEach(s => s.classList.remove('selected'));
-            this.classList.add('selected');
+    function renderTimetable(bookings = []) {
+        const wrapper = document.getElementById('timetable-wrapper');
+        if (!wrapper) return;
 
-            const timeValue = this.getAttribute('data-time');
-            if (preferredTimeInput) {
-                preferredTimeInput.value = timeValue;
-                preferredTimeInput.style.borderColor = 'var(--primary)';
-                setTimeout(() => { preferredTimeInput.style.borderColor = ''; }, 2000);
-            }
+        wrapper.innerHTML = ''; // Clear loading state
 
-            if (registrationSection && !isWordPress) {
-                setTimeout(() => { registrationSection.scrollIntoView({ behavior: 'smooth' }); }, 500);
-            }
+        DAYS.forEach(dayName => {
+            const shortDay = dayName.substring(0, 3);
+            const isSunday = shortDay === 'Sun';
+
+            // Filter times to hide Mon-Sat 7 AM to 5 PM
+            const availableTimesForDay = TIMES.filter(time => {
+                if (isSunday) return true;
+                // Parse hour
+                const match = time.match(/^(\d+):00 (AM|PM)/);
+                let h = parseInt(match[1]);
+                const ampm = match[2];
+                if (ampm === 'PM' && h !== 12) h += 12;
+                if (ampm === 'AM' && h === 12) h = 0;
+
+                // Return true if NOT between 7 AM (7) and 5 PM (17)
+                return (h < 7 || h >= 17);
+            });
+
+            if (availableTimesForDay.length === 0) return;
+
+            const dayRow = document.createElement('div');
+            dayRow.className = 'timetable-day-row';
+
+            const header = document.createElement('div');
+            header.className = 'day-header';
+            header.innerHTML = `<span>${dayName}</span> <small>${availableTimesForDay.length} Slots</small>`;
+            dayRow.appendChild(header);
+
+            const slotsFlex = document.createElement('div');
+            slotsFlex.className = 'slots-flex';
+
+            availableTimesForDay.forEach(time => {
+                const fullTimeKey = `${shortDay}: ${time}`;
+                const booking = bookings.find(b => (b.selected_time || b) === fullTimeKey);
+
+                const slotDiv = document.createElement('div');
+                slotDiv.className = 'slot available';
+                slotDiv.setAttribute('data-time', fullTimeKey);
+                slotDiv.textContent = time;
+
+                if (booking) {
+                    const status = (booking.status || 'approved').toLowerCase();
+                    slotDiv.classList.remove('available');
+                    if (status === 'new' || status === 'pending' || status === 'waiting') {
+                        slotDiv.classList.add('waiting');
+                        slotDiv.textContent = `${time} (Waiting)`;
+                    } else {
+                        slotDiv.classList.add('booked');
+                        slotDiv.textContent = `${time} (Reserved)`;
+                    }
+                }
+
+                // Add click listener
+                slotDiv.addEventListener('click', function () {
+                    if (this.classList.contains('booked') || this.classList.contains('waiting')) return;
+
+                    document.querySelectorAll('.slot.selected').forEach(s => s.classList.remove('selected'));
+                    this.classList.add('selected');
+
+                    if (preferredTimeInput) {
+                        preferredTimeInput.value = this.getAttribute('data-time');
+                        preferredTimeInput.style.borderColor = 'var(--primary)';
+                    }
+                });
+
+                slotsFlex.appendChild(slotDiv);
+            });
+
+            dayRow.appendChild(slotsFlex);
+            wrapper.appendChild(dayRow);
         });
-    });
+    }
 
     // Booking Sync
     function fetchAndApplyBookings() {
@@ -102,59 +173,20 @@ document.addEventListener('DOMContentLoaded', function () {
         let fetchPromise;
 
         if (isWordPress) {
-            // Fetch from WordPress AJAX
             fetchPromise = fetch(quran_ajax.ajax_url, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({
-                    'action': 'quran_get_bookings'
-                })
-            }).then(response => response.json())
-                .then(data => data.success ? data.data : []);
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ 'action': 'quran_get_bookings' })
+            }).then(response => response.json()).then(data => data.success ? data.data : []);
         } else {
-            // Fetch from Google Apps Script
-            const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyhMlo2Vl9UQgaS5Rn8XwcuyYMCC1J_oB-0_MFRjsGkU1_j_tlxNV1RVnnFO6Qa4FTTAg/exec'; // Ensure real URL
-            fetchPromise = fetch(GOOGLE_SCRIPT_URL)
+            fetchPromise = fetch(GOOGLE_SHEET_URL)
                 .then(response => response.json())
                 .then(data => data.success ? data.data : [])
-                .catch(error => {
-                    console.error("Error fetching from GAS:", error);
-                    return [];
-                });
+                .catch(() => []);
         }
 
         fetchPromise.then(bookings => {
-            if (!bookings || bookings.length === 0) return;
-
-            // bookings can be array of objects: {selected_time: 'Mon: 07:00...', status: 'new'} or just objects with selected_time
-            bookings.forEach(booking => {
-                const timeSlotText = booking.selected_time || booking;
-                const status = booking.status ? booking.status.toLowerCase() : 'approved'; // Default to approved for older data if missing
-
-                // Find the slot in the DOM
-                const slotElement = document.querySelector(`.slot[data-time="${timeSlotText}"]`);
-
-                if (slotElement) {
-                    // Clear existing availability classes
-                    slotElement.classList.remove('available', 'booked', 'waiting', 'selected');
-
-                    if (status === 'new' || status === 'pending' || status === 'waiting') {
-                        // Waiting status
-                        slotElement.classList.add('waiting');
-                        slotElement.textContent = 'Waiting';
-                    } else if (status === 'approved' || status === 'booked') {
-                        // Fully booked status
-                        slotElement.classList.add('booked');
-                        slotElement.textContent = 'Reserved';
-                    } else {
-                        // Fallback to booked if weird status
-                        slotElement.classList.add('booked');
-                        slotElement.textContent = 'Reserved';
-                    }
-                }
-            });
+            renderTimetable(bookings);
         });
     }
     fetchAndApplyBookings();
