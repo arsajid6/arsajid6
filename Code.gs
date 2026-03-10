@@ -19,6 +19,7 @@ const COL_COURSE        = 7;
 const COL_SELECTED_TIME = 8;
 const COL_MESSAGE       = 9;
 const COL_STATUS        = 10;  // K column → 'Pending' / 'Approved' / 'Rejected'
+const COL_DEBUG         = 11;  // L column → For logging email errors
 
 // ─── Helper: Add CORS Headers ────────────────────────────────
 function corsOutput(jsonString) {
@@ -86,14 +87,17 @@ function doPost(e) {
       `The student will automatically receive a confirmation email.\n\n` +
       `Wassalam,\nBooking System`;
 
+    let debugLog = [];
+
     try {
       MailApp.sendEmail({ to: ADMIN_EMAIL, subject: adminSubject, body: adminBody });
+      debugLog.push('Admin Email: OK');
     } catch (err) {
-      Logger.log('Admin email error: ' + err.message);
+      debugLog.push('Admin Email Error: ' + err.message);
     }
 
     // ── Email to Student ──────────────────────────────────────
-    if (studentEmail) {
+    if (studentEmail && studentEmail.includes('@')) {
       const studentSubject = `✅ Application Received – Nur al-Quran`;
       const studentBody =
         `Assalamu Alaikum ${studentName},\n\n` +
@@ -107,10 +111,16 @@ function doPost(e) {
 
       try {
         MailApp.sendEmail({ to: studentEmail, subject: studentSubject, body: studentBody });
+        debugLog.push('Student Email: OK');
       } catch (err) {
-        Logger.log('Student email error: ' + err.message);
+        debugLog.push('Student Email Error: ' + err.message);
       }
+    } else {
+      debugLog.push('Student Email: Invalid or Missing (' + studentEmail + ')');
     }
+
+    // Append debug log to the new row
+    sheet.getRange(sheet.getLastRow(), COL_DEBUG + 1).setValue(debugLog.join(' | '));
 
     return corsOutput(JSON.stringify({
       success: true,
@@ -236,13 +246,20 @@ function ensureHeaders(sheet) {
   if (sheet.getLastRow() === 0) {
     sheet.appendRow([
       'time_created', 'student_name', 'age', 'gender', 'country',
-      'email', 'whatsapp', 'course', 'selected_time', 'message', 'status'
+      'email', 'whatsapp', 'course', 'selected_time', 'message', 'status', 'debug_logs'
     ]);
     // Style the header row
-    const headerRange = sheet.getRange(1, 1, 1, 11);
+    const headerRange = sheet.getRange(1, 1, 1, 12);
     headerRange.setBackground('#1a3c5e');
     headerRange.setFontColor('#ffffff');
     headerRange.setFontWeight('bold');
+  } else {
+    // Check if col L exists, if not, add header
+    const lastCol = sheet.getLastColumn();
+    if (lastCol < 12) {
+      sheet.getRange(1, 12).setValue('debug_logs');
+      sheet.getRange(1, 12).setBackground('#1a3c5e').setFontColor('#ffffff').setFontWeight('bold');
+    }
   }
 }
 
