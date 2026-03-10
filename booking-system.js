@@ -129,20 +129,31 @@ document.addEventListener('DOMContentLoaded', function () {
                 const fullTimeKey = `${shortDay}: ${time}`;
                 const booking = bookings.find(b => (b.selected_time || b) === fullTimeKey);
 
+                const isPM = time.includes('PM');
+                const hourNum = parseInt(time.split(':')[0]);
+                let icon = '🌅'; // Default morning
+                if (isPM) {
+                    if (hourNum >= 1 && hourNum < 5) icon = '☀️';
+                    else if (hourNum >= 5 && hourNum < 8) icon = '🌇';
+                    else icon = '🌙';
+                } else {
+                    if (hourNum >= 10 && hourNum < 12) icon = '☀️';
+                }
+
                 const slotDiv = document.createElement('div');
                 slotDiv.className = 'slot available';
                 slotDiv.setAttribute('data-time', fullTimeKey);
-                slotDiv.textContent = time;
+                slotDiv.innerHTML = `<span class="slot-icon">${icon}</span> <span>${time}</span>`;
 
                 if (booking) {
                     const status = (booking.status || 'approved').toLowerCase();
                     slotDiv.classList.remove('available');
                     if (status === 'new' || status === 'pending' || status === 'waiting') {
                         slotDiv.classList.add('waiting');
-                        slotDiv.textContent = `${time} (Waiting)`;
+                        slotDiv.innerHTML = `<span class="slot-icon">⏳</span> <span>${time}</span>`;
                     } else {
                         slotDiv.classList.add('booked');
-                        slotDiv.textContent = `${time} (Reserved)`;
+                        slotDiv.innerHTML = `<span class="slot-icon">🔒</span> <span style="text-decoration: line-through;">${time}</span>`;
                     }
                 }
 
