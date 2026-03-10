@@ -168,6 +168,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         preferredTimeInput.value = this.getAttribute('data-time');
                         preferredTimeInput.style.borderColor = 'var(--primary)';
                     }
+
+                    // Auto-scroll back to form (UX Improvement)
+                    if (registrationSection) {
+                        registrationSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
                 });
 
                 slotsFlex.appendChild(slotDiv);
