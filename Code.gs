@@ -66,32 +66,39 @@ function doPost(e) {
     ];
 
     sheet.appendRow(rowData);
+    const newRowIndex = sheet.getLastRow();
 
-    // ── Email to Admin ────────────────────────────────────────
-    const adminSubject = `📩 New Application: ${studentName} – Nur al-Quran`;
-    const adminBody =
-      `Assalamu Alaikum,\n\n` +
-      `A new admission application has been received.\n\n` +
-      `────────────────────────\n` +
-      `Name:           ${studentName}\n` +
-      `Age:            ${age}\n` +
-      `Gender:         ${gender}\n` +
-      `Country:        ${country}\n` +
-      `Email:          ${studentEmail}\n` +
-      `WhatsApp:       ${whatsapp}\n` +
-      `Course:         ${course}\n` +
-      `Preferred Time: ${preferredTime}\n` +
-      `Message:        ${message}\n` +
-      `────────────────────────\n\n` +
-      `To approve this application, open the Google Sheet and change the STATUS column (K) from "Pending" to "Approved".\n` +
-      `The student will automatically receive a confirmation email.\n\n` +
-      `Wassalam,\nBooking System`;
+    // ── Interactive Email to Admin ────────────────────────────
+    const scriptUrl = 'https://script.google.com/macros/s/AKfycbyhMlo2Vl9UQgaS5Rn8XwcuyYMCC1J_oB-0_MFRjsGkU1_j_tlxNV1RVnnFO6Qa4FTTAg/exec'; 
+    const approveUrl = `${scriptUrl}?action=approve&row=${newRowIndex}`;
+    const rejectUrl  = `${scriptUrl}?action=reject&row=${newRowIndex}`;
 
-    let debugLog = [];
+    const adminSubject = `📩 New Application: ${studentName}`;
+    const htmlBody = `
+      <div style="font-family: sans-serif; max-width: 600px; border: 1px solid #eee; border-radius: 15px; padding: 25px; background-color: #ffffff;">
+        <h2 style="color: #2D5A27; text-align: center; margin-top: 0;">New Admission Application</h2>
+        <div style="background-color: #f8fbf8; padding: 20px; border-radius: 10px; border: 1px solid #eef2ee; margin-bottom: 25px;">
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr><td style="padding: 10px 0; border-bottom: 1px solid #eee; font-weight: bold; width: 120px;">Student:</td><td style="padding: 10px 0; border-bottom: 1px solid #eee;">${studentName}</td></tr>
+            <tr><td style="padding: 10px 0; border-bottom: 1px solid #eee; font-weight: bold;">Age / Gender:</td><td style="padding: 10px 0; border-bottom: 1px solid #eee;">${age} / ${gender}</td></tr>
+            <tr><td style="padding: 10px 0; border-bottom: 1px solid #eee; font-weight: bold;">Course:</td><td style="padding: 10px 0; border-bottom: 1px solid #eee;">${course}</td></tr>
+            <tr><td style="padding: 10px 0; border-bottom: 1px solid #eee; font-weight: bold;">Time (PKT):</td><td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #2D5A27; font-weight: bold;">${preferredTime}</td></tr>
+            <tr><td style="padding: 10px 0; border-bottom: 1px solid #eee; font-weight: bold;">WhatsApp:</td><td style="padding: 10px 0; border-bottom: 1px solid #eee;"><a href="https://wa.me/${whatsapp.replace(/\D/g,'')}" style="color: #2D5A27; text-decoration: none;">${whatsapp}</a></td></tr>
+          </table>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+          <a href="${approveUrl}" style="background-color: #2D5A27; color: white; padding: 15px 35px; text-decoration: none; border-radius: 50px; font-weight: bold; display: inline-block;">Approve Slot</a>
+          &nbsp;&nbsp;&nbsp;
+          <a href="${rejectUrl}" style="background-color: #fcf4f4; color: #c0392b; padding: 15px 35px; text-decoration: none; border-radius: 50px; font-weight: bold; display: inline-block; border: 1px solid #f9ebeb;">Reject</a>
+        </div>
+      </div>
+    `;
 
     try {
-      GmailApp.sendEmail(ADMIN_EMAIL, adminSubject, adminBody, {
-        name: 'Nur al-Quran Academy'
+      GmailApp.sendEmail(ADMIN_EMAIL, adminSubject, '', {
+        name: 'Nur al-Quran Academy',
+        htmlBody: htmlBody
       });
       debugLog.push('Admin Email: OK');
     } catch (err) {
@@ -143,17 +150,49 @@ function doPost(e) {
 // ============================================================
 function doGet(e) {
   try {
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
-    const allData = sheet.getDataRange().getValues();
+    const action = e.parameter.action;
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getSheetByName(SHEET_NAME);
 
+    // ── Handle Email Actions (Approve/Reject) ─────────────────
+    if (action === 'approve' || action === 'reject') {
+      const row = parseInt(e.parameter.row);
+      if (!row || row <= 1) return HtmlService.createHtmlOutput("<h3>❌ Invalid Request</h3>");
+
+      const currentStatus = String(sheet.getRange(row, 11).getValue() || '').trim();
+      if (currentStatus !== 'Pending') {
+        return HtmlService.createHtmlOutput(`
+          <div style="font-family: sans-serif; text-align: center; padding: 50px;">
+            <h2 style="color: #333;">ℹ️ Already Processed</h2>
+            <p>This application is already marked as <strong>${currentStatus}</strong>.</p>
+            <a href="${ss.getUrl()}" target="_blank" style="color: #2D5A27;">Open Google Sheet</a>
+          </div>
+        `);
+      }
+
+      const newStatus = action === 'approve' ? 'Approved' : 'Rejected';
+      sheet.getRange(row, 11).setValue(newStatus);
+
+      const color = action === 'approve' ? '#2D5A27' : '#c0392b';
+      const icon = action === 'approve' ? '✅' : '❌';
+
+      return HtmlService.createHtmlOutput(`
+        <div style="font-family: sans-serif; text-align: center; padding: 50px;">
+          <h2 style="color: ${color};">${icon} Successfully ${newStatus}</h2>
+          <p>The system has been updated and the student notified (if needed).</p>
+          <br>
+          <a href="${ss.getUrl()}" target="_blank" style="color: #2D5A27; text-decoration: none; font-weight: bold;">← Back to Google Sheet</a>
+        </div>
+      `);
+    }
+
+    // ── Handle Fetch Bookings (for website) ───────────────────
+    const allData = sheet.getDataRange().getValues();
     let bookedSlots = [];
 
-    // Start from row index 1 to skip the header row
     for (let i = 1; i < allData.length; i++) {
       const time   = allData[i][COL_SELECTED_TIME];
       const status = String(allData[i][COL_STATUS] || '').trim();
-
-      // Show as BOOKED if Approved, WAITING if Pending/new
       if (time && (status === 'Approved' || status === 'Pending' || status === 'new' || status === 'WAITING' || status === 'Waiting')) {
         bookedSlots.push({ selected_time: String(time).trim(), status: status });
       }
