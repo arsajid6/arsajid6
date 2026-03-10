@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- GOOGLE SHEETS SETUP ---
     // User will paste their Apps Script Web App URL here later
-    const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbyhMlo2Vl9UQgaS5Rn8XwcuyYMCC1J_oB-0_MFRjsGkU1_j_tlxNV1RVnnFO6Qa4FTTAg/exec';
+    const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbwgO-bRwqJThNgUO9Cg8AXdAh1fidbLY6zUVDwRcbFX/exec'; // Updated to the new deployment URL
 
     // AJAX URL logic
     const getBackendUrl = () => {
