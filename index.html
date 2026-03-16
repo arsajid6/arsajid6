@@ -1,320 +1,181 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nur al-Quran | Premium Online Quran Teaching</title>
-    <meta name="description"
-        content="Learn Quran online with professional teachers. Noorani Qaida, Tajweed, and Memorization with a modern, peaceful learning experience.">
+    <title>Noor Madrasa | Premium Online Quran Teaching</title>
+    <meta name="description" content="Learn Quran online with professional teachers. Noorani Qaida, Tajweed, and Memorization with a modern, peaceful learning experience.">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Amiri:ital,wght@0,400;0,700;1,400;1,700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <!-- CSS -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="booking-system.css">
 </head>
-
-<body>
-
-    <header id="main-header">
-        <div class="logo">
-            Nur <span>al-Quran</span>
+<body class="noor-theme">
+    <header class="new-header">
+        <div class="logo-box">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="#a48d42" xmlns="http://www.w3.org/2000/svg" style="margin-right: 12px;">
+                <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/>
+            </svg>
+            <div class="logo-text">NOOR<br><span>MADRASA</span></div>
         </div>
-        <nav>
+        <nav class="pill-nav">
             <ul>
-                <li><a href="#home">Home</a></li>
+                <li><a href="#home" class="active">Home</a></li>
                 <li><a href="#courses">Courses</a></li>
+                <li><a href="#faculty">Faculty</a></li>
+                <li><a href="#enrollment">Live</a></li>
                 <li><a href="#about">About</a></li>
-                <li><a href="#classroom">Classroom</a></li>
-                <li><a href="#pricing">Pricing</a></li>
-                <li><a href="#contact">Contact</a></li>
             </ul>
         </nav>
-        <a href="#contact" class="btn-cta">Start Free Trial</a>
+        <div class="header-actions">
+            <a href="#login" class="login-link">Login</a>
+            <a href="#courses" class="btn-cta-green">Get Started</a>
+        </div>
     </header>
 
     <main>
-        <section id="home" class="hero">
-            <div class="hero-content">
-                <div class="hero-inspiration">
-                    <div class="inspiration-item">
-                        <span class="inspiration-label">Quranic Guidance</span>
-                        <div class="arabic-text">وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا</div>
-                        <p class="translation">"And recite the Quran with measured recitation."</p>
-                    </div>
-                    <div class="inspiration-divider"></div>
-                    <div class="inspiration-item">
-                        <span class="inspiration-label">Prophetic Wisdom</span>
-                        <div class="arabic-text">خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ</div>
-                        <p class="translation">"The best among you are those who learn the Quran and teach it."</p>
-                    </div>
+        <div class="hero-split" id="home">
+            <div class="hero-left">
+                <h1 class="serif-heading hero-title">Elevate Your Faith<br>Through Knowledge.</h1>
+                <p class="hero-desc">Learn Islamic Studies from Expert<br><span style="color: #a48d42; font-style: italic;">Scholars Anytime, Anywhere.</span></p>
+                <a href="#courses" class="btn-cta-green hero-btn" style="display:inline-block; margin-top:1rem;">Explore Courses</a>
+            </div>
+            <div class="hero-right">
+                <img src="./quran_hero_bg.png" alt="Quran" class="hero-img">
+            </div>
+        </div>
+
+        <section id="features" class="features-section">
+            <h2 class="serif-heading text-center mb-section">Why Learn With Us?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <img src="./quran_icon_1.png" alt="Expert" class="icon-img"/>
+                    <h3>Expert Scholars</h3>
+                    <p class="subtitle-gold">Gold</p>
                 </div>
-                <p>Begin Your Spiritual Journey</p>
-                <h1>Master the <span>Holy Quran</span> from Home</h1>
-                <p>Expert online tutoring for kids and adults. personalized lessons, tajweed excellence, and a peaceful
-                    learning environment.</p>
-                <div class="hero-btns">
-                    <a href="#courses" class="btn-cta">Explore Courses</a>
+                <div class="feature-card">
+                    <img src="./quran_icon_2.png" alt="Flexible" class="icon-img"/>
+                    <h3>Flexible Learning</h3>
+                    <p class="subtitle-gold">Gold</p>
+                </div>
+                <div class="feature-card">
+                    <img src="./quran_icon_1.png" alt="Comprehensive" class="icon-img"/>
+                    <h3>Comprehensive Curriculum</h3>
+                    <p class="subtitle-gold">Gold</p>
                 </div>
             </div>
-
-
         </section>
 
-        <section id="classroom" class="classroom">
-            <div class="section-title">
-                <p>Virtual Campus</p>
-                <h2>Our Classroom</h2>
-                <p class="section-subtitle">A modern space for interactive learning and spiritual growth.</p>
-            </div>
-            <div class="classroom-grid">
-                <div class="classroom-card">
-                    <div class="card-icon">💻</div>
-                    <h3>Live Sessions</h3>
-                    <p>Join our interactive online Zoom/Google Meet classes directly from here.</p>
-                    <a href="#" class="btn-classroom">Join Class Now</a>
+        <!-- Courses & Reviews Wrapper for background separation -->
+        <div class="courses-reviews-wrapper">
+            <section id="courses" class="pricing-section">
+                <h2 class="serif-heading text-center mb-section">Discover Our Structured<br>Course Packages</h2>
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <h3>Starter</h3>
+                        <p class="course-name">Course Name</p>
+                        <ul class="package-features">
+                            <li><span>✔</span> Real-time teaching</li>
+                            <li><span>✔</span> Flexible Learning</li>
+                            <li><span>✔</span> Expert adjustments</li>
+                        </ul>
+                        <div class="price-row">
+                            <span class="price">$10.00</span>
+                            <div class="quantity-control" style="opacity:0.3; pointer-events:none;">
+                                <button>-</button><span>1</span><button>+</button>
+                            </div>
+                        </div>
+                        <a href="#enrollment" class="btn-cta-green block-btn">Enroll Now</a>
+                    </div>
+                    <div class="pricing-card">
+                        <h3>Pro</h3>
+                        <p class="course-name">Course Name</p>
+                        <ul class="package-features">
+                            <li><span>✔</span> Real-time teaching</li>
+                            <li><span>✔</span> Flexible Learning</li>
+                            <li><span>✔</span> Expert adjustments</li>
+                        </ul>
+                        <div class="price-row">
+                            <span class="price">$32.00</span>
+                            <div class="quantity-control" style="opacity:0.3; pointer-events:none;">
+                                <button>-</button><span>1</span><button>+</button>
+                            </div>
+                        </div>
+                        <a href="#enrollment" class="btn-cta-green block-btn">Enroll Now</a>
+                    </div>
+                    <div class="pricing-card">
+                        <h3>Scholar</h3>
+                        <p class="course-name">Course Name</p>
+                        <ul class="package-features">
+                            <li><span>✔</span> Real-time teaching</li>
+                            <li><span>✔</span> Flexible Learning</li>
+                            <li><span>✔</span> Expert adjustments</li>
+                        </ul>
+                        <div class="price-row">
+                            <span class="price">$36.00</span>
+                            <div class="quantity-control" style="opacity:0.3; pointer-events:none;">
+                                <button>-</button><span>1</span><button>+</button>
+                            </div>
+                        </div>
+                        <a href="#enrollment" class="btn-cta-green block-btn">Enroll Now</a>
+                    </div>
                 </div>
-                <div class="classroom-card featured-classroom">
-                    <div class="card-icon">📚</div>
-                    <h3>Learning Resources</h3>
-                    <p>Access Noorani Qaida, Tajweed PDFs, and other essential study materials.</p>
-                    <a href="#" class="btn-classroom">Browse Materials</a>
-                </div>
-                <div class="classroom-card">
-                    <div class="card-icon">📅</div>
-                    <h3>Class Schedule</h3>
-                    <p>View your personalized weekly timetable and never miss a lesson.</p>
-                    <a href="#timetable" id="view-timetable-btn" class="btn-classroom">View Timetable</a>
-                </div>
-            </div>
+            </section>
 
-            <!-- New Timetable Section -->
-            <div id="timetable" class="timetable-container hidden">
+            <section id="reviews" class="reviews-section">
+                <h2 class="serif-heading text-center mb-section">Hear From Our Global Community</h2>
+                <div class="reviews-slider-container">
+                    <button class="slider-btn prev-btn">❮</button>
+                    <div class="reviews-grid-new">
+                        <div class="review-card-new">
+                            <img src="./instructor_photo.png" alt="Avatar" class="avatar-small">
+                            <h4>Alram Name</h4>
+                            <span class="location">Location</span>
+                            <p class="review-text">"These neens rears teaching in ils students."</p>
+                        </div>
+                        <div class="review-card-new featured-review">
+                            <img src="./instructor_photo.png" alt="Avatar" class="avatar-small">
+                            <h4>Amasa Kanrad</h4>
+                            <span class="location">Location</span>
+                            <p class="review-text">"We are discoverers and students learn each great."</p>
+                        </div>
+                        <div class="review-card-new">
+                            <img src="./instructor_photo.png" alt="Avatar" class="avatar-small">
+                            <h4>Karten Sanhan</h4>
+                            <span class="location">Location</span>
+                            <p class="review-text">"Leaving the known to make it an an awakening student."</p>
+                        </div>
+                    </div>
+                    <button class="slider-btn next-btn">❯</button>
+                </div>
+            </section>
+        </div>
+
+        <section id="enrollment" class="booking-section-wrapper" style="padding: 5rem 5%;">
+            <h2 class="serif-heading text-center mb-section">View Timetable & Book Slot</h2>
+            <div id="timetable" class="timetable-container hidden" style="display: block;">
                 <div class="timetable-legend">
                     <span class="legend-item"><span class="status-dot available"></span> Available Slot</span>
                     <span class="legend-item"><span class="status-dot waiting"></span> Waiting / Pending</span>
                     <span class="legend-item"><span class="status-dot booked"></span> Occupied / Booked</span>
                 </div>
                 <div id="timetable-wrapper" class="timetable-wrapper">
-                    <!-- Slots will be rendered here dynamically by JavaScript -->
                     <div class="loading-slots">Loading available slots...</div>
                 </div>
-                <p class="timetable-note">* All times are shown in Pakistan Standard Time (PKT). Please adjust according
-                    to your local time zone.</p>
+                <p class="timetable-note">* All times are shown in Pakistan Standard Time (PKT). Please adjust according to your local time zone.</p>
             </div>
-        </section>
 
-
-
-        <section id="courses">
-            <div class="section-title">
-                <p>Our Programs</p>
-                <h2>Choose Your Course</h2>
-            </div>
-            <div class="courses-grid">
-                <div class="course-card">
-                    <img src="./quran_icon_1.png" alt="Noorani Qaida">
-                    <h3>Noorani Qaida</h3>
-                    <p>Foundation for beginners to learn Arabic alphabets and basic reading rules.</p>
-                </div>
-                <div class="course-card">
-                    <img src="./quran_icon_2.png" alt="Tajweed Rules">
-                    <h3>Tajweed Excellence</h3>
-                    <p>Master the art of recitation with correct pronunciation and melodic rules.</p>
-                </div>
-                <div class="course-card">
-                    <img src="./quran_icon_1.png" alt="Quran Memorization">
-                    <h3>Hifz-e-Quran</h3>
-                    <p>Guided memorization programs with experienced Hafiz tutors.</p>
-                </div>
-                <div class="course-card">
-                    <img src="./quran_icon_2.png" alt="Urdu Translation">
-                    <h3>Urdu Translation</h3>
-                    <p>Understanding the Holy Quran with precise Urdu translation and context.</p>
-                </div>
-                <div class="course-card">
-                    <img src="./quran_icon_1.png" alt="Tafsir">
-                    <h3>Quranic Tafsir</h3>
-                    <p>In-depth study of the meanings and explanations of the Quranic verses.</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="about" class="about">
-            <div class="about-container">
-                <div class="about-image">
-                    <img src="./instructor_photo.png" alt="Qari Abdul Rehman Sajid" class="instructor-photo">
-                    <div class="experience-badge">
-                        <span class="years">10+</span>
-                        <span class="text">Years Experience</span>
-                    </div>
-                </div>
-                <div class="about-content">
-                    <p class="subtitle">Meet Your Instructor</p>
-                    <h2>Qari <span>Abdul Rehman Sajid</span></h2>
-                    <p class="bio">Dedicated to spreading the divine light of the Holy Quran with a decade of teaching
-                        experience. Specialized in Tajweed, Qiraat, and Islamic Studies, ensuring every student masters
-                        the art of recitation and understanding.</p>
-
-                    <div class="qualifications">
-                        <div class="qual-item">
-                            <span class="icon">🎓</span>
-                            <div>
-                                <h4>Academic Excellence</h4>
-                                <p>MA Islamic Studies, Urdu & Arabic</p>
-                            </div>
-                        </div>
-                        <div class="qual-item">
-                            <span class="icon">📜</span>
-                            <div>
-                                <h4>Certified Qari</h4>
-                                <p>Qira'at Saba' Ashra, Tajweed, Dars-e-Nizami</p>
-                            </div>
-                        </div>
-                        <div class="qual-item">
-                            <span class="icon">🗣️</span>
-                            <div>
-                                <h4>Multilingual</h4>
-                                <p>Fluent in Urdu, English, Punjabi</p>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="#contact" class="btn-cta">Start Learning Today</a>
-                </div>
-            </div>
-        </section>
-
-        <section id="reviews" class="reviews">
-            <div class="section-title">
-                <p>Testimonials</p>
-                <h2>What Our Students Say</h2>
-                <p class="section-subtitle">A few samples from our community of dedicated students and parents.</p>
-            </div>
-            <div class="reviews-grid">
-                <div class="review-card">
-                    <div class="quote-icon">"</div>
-                    <p class="review-text">Qari Abdul Rehman is an exceptional teacher. His method of explaining Tajweed
-                        rules is very easy to understand.</p>
-                    <div class="reviewer-info">
-                        <h4>Moiz Ahmed</h4>
-                        <span>Student</span>
-                    </div>
-                </div>
-                <div class="review-card">
-                    <div class="quote-icon">"</div>
-                    <p class="review-text">I've started my Hifz journey with him, and I'm amazed at how personalized and
-                        encouraging the lessons are.</p>
-                    <div class="reviewer-info">
-                        <h4>Abdul Hadi</h4>
-                        <span>Hifz Student</span>
-                    </div>
-                </div>
-                <div class="review-card">
-                    <div class="quote-icon">"</div>
-                    <p class="review-text">Best online Quran classes for kids. My son has made significant progress in
-                        just a few weeks.</p>
-                    <div class="reviewer-info">
-                        <h4>Yahya Johar</h4>
-                        <span>Parent</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="pricing" class="pricing">
-            <div class="section-title">
-                <p>Fee Structure</p>
-                <h2>Course Packages</h2>
-                <p class="section-subtitle">Affordable and flexible plans for students worldwide.</p>
-            </div>
-            <div class="pricing-grid">
-                <!-- Nazra -->
-                <div class="pricing-card">
-                    <div class="package-name">Nazra Class</div>
-                    <div class="package-duration">30 Minutes / Session</div>
-                    <div class="package-price">
-                        <span class="pkr">Rs. 10,000</span>
-                        <span class="usd">$35 USD</span>
-                    </div>
-                    <ul class="package-features">
-                        <li>Basic Quran Reading</li>
-                        <li>Noorani Qaida included</li>
-                        <li>Correct Pronunciation</li>
-                        <li>Personalized Feedback</li>
-                    </ul>
-                    <a href="#contact" class="btn-cta secondary">Enroll Now</a>
-                </div>
-                <!-- Hifz -->
-                <div class="pricing-card featured">
-                    <div class="featured-tag">Most Popular</div>
-                    <div class="package-name">Hifz Class</div>
-                    <div class="package-duration">60 Minutes / Session</div>
-                    <div class="package-price">
-                        <span class="pkr">Rs. 20,000</span>
-                        <span class="usd">$70 USD</span>
-                    </div>
-                    <ul class="package-features">
-                        <li>Complete Memorization</li>
-                        <li>Revision Tracking</li>
-                        <li>Tajweed Excellence</li>
-                        <li>Dedicated Attention</li>
-                    </ul>
-                    <a href="#contact" class="btn-cta">Enroll Now</a>
-                </div>
-                <!-- Tarjuma -->
-                <div class="pricing-card">
-                    <div class="package-name">Tarjuma Class</div>
-                    <div class="package-duration">30 Minutes / Session</div>
-                    <div class="package-price">
-                        <span class="pkr">Rs. 10,000</span>
-                        <span class="usd">$35 USD</span>
-                    </div>
-                    <ul class="package-features">
-                        <li>Word-to-Word Translation</li>
-                        <li>Understanding Syntax</li>
-                        <li>Contextual Meanings</li>
-                        <li>Basic Grammar</li>
-                    </ul>
-                    <a href="#contact" class="btn-cta secondary">Enroll Now</a>
-                </div>
-                <!-- Tafsir -->
-                <div class="pricing-card">
-                    <div class="package-name">Tafsir Class</div>
-                    <div class="package-duration">30 Minutes / Session</div>
-                    <div class="package-price">
-                        <span class="pkr">Rs. 10,000</span>
-                        <span class="usd">$35 USD</span>
-                    </div>
-                    <ul class="package-features">
-                        <li>In-depth Explanation</li>
-                        <li>Historical Context</li>
-                        <li>Practical Applications</li>
-                        <li>Spiritual Insights</li>
-                    </ul>
-                    <a href="#contact" class="btn-cta secondary">Enroll Now</a>
-                </div>
-            </div>
-        </section>
-
-        <section id="contact" class="registration">
-            <div class="registration-container">
-                <div class="section-title">
-                    <p>Enroll Today</p>
-                    <h2>Start Your Free Trial</h2>
-                </div>
-                <form id="enrollment-form" class="premium-form">
-
+            <div class="registration-container" style="margin-top: 3rem; margin-inline:auto; max-width: 900px;">
+                <form id="enrollment-form" class="premium-form noor-form">
                     <div class="form-section">
                         <h4 class="form-section-title">Student Information</h4>
                         <div class="form-grid">
                             <div class="form-group">
                                 <label for="full-name">Full Name</label>
-                                <input type="text" id="full-name" name="full-name"
-                                    placeholder="Enter student's full name" required>
+                                <input type="text" id="full-name" name="full-name" placeholder="Enter student's full name" required>
                             </div>
                             <div class="form-group">
                                 <label for="age">Age</label>
@@ -354,8 +215,7 @@
                                         <option value="+61">AU (+61)</option>
                                         <option value="other">Other</option>
                                     </select>
-                                    <input type="tel" id="whatsapp" name="whatsapp"
-                                        placeholder="Number (e.g. 3001234567)" required>
+                                    <input type="tel" id="whatsapp" name="whatsapp" placeholder="Number (e.g. 3001234567)" required>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -392,64 +252,53 @@
                             </div>
                             <div class="form-group">
                                 <label for="preferred-time">Preferred Class Timing</label>
-                                <input type="text" id="preferred-time" name="preferred-time"
-                                    placeholder="Click to select from Timetable" readonly required>
+                                <input type="text" id="preferred-time" name="preferred-time" placeholder="Click to select from Timetable" readonly required>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group full-width">
                         <label for="message">Additional Message (Optional)</label>
-                        <textarea id="message" name="message" rows="4"
-                            placeholder="Any specific requirements or previous Islamic education?"></textarea>
+                        <textarea id="message" name="message" rows="4" placeholder="Any specific requirements or previous Islamic education?"></textarea>
                     </div>
-                    <button type="submit" class="btn-cta full-width">Submit Admission Form</button>
+                    <button type="submit" class="btn-cta-green block-btn mt-4">Submit Admission Form</button>
                     <p id="form-feedback" class="form-feedback"></p>
                 </form>
             </div>
         </section>
     </main>
 
-    <footer>
-        <div class="footer-content">
-            <div class="footer-branding">
-                <div class="footer-logo">Nur <span>al-Quran</span></div>
-                <p>Nurturing hearts with the light of Quranic wisdom through modern online education.</p>
-            </div>
-            <div class="footer-links">
-                <h4>Quick Links</h4>
-                <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#courses">Courses</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </div>
-            <div class="footer-links">
-                <h4>Courses</h4>
-                <ul>
-                    <li><a href="#">Noorani Qaida</a></li>
-                    <li><a href="#">Tajweed Rules</a></li>
-                    <li><a href="#">Memorization</a></li>
-                    <li><a href="#">Arabic Language</a></li>
-                </ul>
-            </div>
-            <div class="footer-links">
-                <h4>Contact Us</h4>
-                <ul>
-                    <li><a href="tel:00923234416045">Phone: 00923234416045</a></li>
-                    <li><a href="mailto:arsajid6@gmail.com">Email: arsajid6@gmail.com</a></li>
-                    <li><a href="#">Location: Lahore, Pakistan</a></li>
-                </ul>
-            </div>
+    <footer class="new-footer" id="about">
+        <div class="footer-links-row">
+            <ul class="footer-col">
+                <li style="margin-bottom: 1.5rem;"><a href="#home" style="color:#104C3A; font-weight:700;">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#faculty">Faculty</a></li>
+            </ul>
+            <ul class="footer-col">
+                <li style="margin-bottom: 1.5rem;"><a href="#courses" style="color:#104C3A; font-weight:700;">Courses</a></li>
+                <li><a href="#live">Live Sessions</a></li>
+            </ul>
+            <ul class="footer-col">
+                <li style="margin-bottom: 1.5rem;"><a href="#community" style="color:#104C3A; font-weight:700;">Community</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <ul class="footer-col" style="margin-left:auto;">
+                <li style="margin-bottom: 1.5rem;"><a href="#privacy" style="color:#104C3A; font-weight:700;">Privacy</a></li>
+                <li><a href="#terms">Terms</a></li>
+            </ul>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 Nur al-Quran. All rights reserved.</p>
+        <div class="footer-bottom-row">
+            <p>&copy; Noor Madrasa</p>
+            <div class="social-icons">
+                <a href="#">f</a>
+                <a href="#">t</a>
+                <a href="#">i</a>
+            </div>
         </div>
     </footer>
 
     <script src="booking-system.js?v=1.2"></script>
     <script src="script.js?v=1.4"></script>
 </body>
-
 </html>
